@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: simple-web-app
-        image: 381492112141.dkr.ecr.us-east-1.amazonaws.com/gitops-web-app/gitops-web-app:latest 
+        image: 381492112141.dkr.ecr.us-east-1.amazonaws.com/gitops-web-app:latest
         ports:
         - containerPort: 80

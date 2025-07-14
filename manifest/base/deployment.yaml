@@ -1,0 +1,22 @@
+# manifests/base/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-web-app
+  labels:
+    app: simple-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-web-app
+  template:
+    metadata:
+      labels:
+        app: simple-web-app
+    spec:
+      containers:
+      - name: simple-web-app
+        image: 381492112141.dkr.ecr.us-east-1.amazonaws.com/gitops-web-app/gitops-web-app:latest 
+        ports:
+        - containerPort: 80

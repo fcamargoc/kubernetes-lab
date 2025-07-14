@@ -1,0 +1,27 @@
+# cluster.yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: gitops-lab-cluster
+  region: us-east-1 # Cambia a tu región preferida
+  version: "1.28"  # Puedes ajustar la versión de Kubernetes
+
+vpc:
+  cidr: 10.0.0.0/16
+  nat:
+    gateway: HighlyAvailable
+
+managedNodeGroups:
+- name: ng-general
+  instanceType: t3.medium
+  desiredCapacity: 2
+  minSize: 1
+  maxSize: 3
+  volumeSize: 20
+  ssh:
+    allow: true # Permite SSH, considera restringir IPs en un entorno real
+    publicKeyPath: ~/.ssh/id_rsa.pub # Asegúrate de tener una clave SSH configurada
+  labels: {role: general}
+  tags:
+    Name: gitops-lab-node

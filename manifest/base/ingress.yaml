@@ -1,0 +1,23 @@
+# manifests/base/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-web-app-ingress
+  annotations:
+    # Si usas Nginx Ingress Controller
+    kubernetes.io/ingress.class: nginx
+    # Si usas AWS ALB Ingress Controller (requiere aws-load-balancer-controller)
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
+    # alb.ingress.kubernetes.io/group.name: your-alb-group # Opcional, para agrupar ALB
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: simple-web-app-service
+            port:
+              number: 80

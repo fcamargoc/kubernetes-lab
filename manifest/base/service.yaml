@@ -1,0 +1,15 @@
+# manifests/base/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-web-app-service
+  labels:
+    app: simple-web-app
+spec:
+  selector:
+    app: simple-web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP # Usaremos Ingress para exposición externa

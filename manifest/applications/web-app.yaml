@@ -1,0 +1,21 @@
+# manifests/applications/web-app.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: simple-web-app
+  namespace: argocd # Debe estar en el mismo namespace que Argo CD
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/fcamargoc/kubernetes-lab.git # ¡ACTUALIZA ESTO!
+    targetRevision: main # O una rama específica, ej. main
+    path: manifests/base # La ruta a tus manifiestos en el repo
+  destination:
+    server: https://kubernetes.default.svc # El clúster donde está Argo CD
+    namespace: default # El namespace donde quieres desplegar tu app
+  syncPolicy:
+    automated:        # Habilita la sincronización automática
+      prune: true     # Elimina recursos que ya no estén en Git
+      selfHeal: true  # Sincroniza si hay desviaciones
+    syncOptions:
+    - CreateNamespace=true # Crea el namespace si no existe

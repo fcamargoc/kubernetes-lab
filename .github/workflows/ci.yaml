@@ -1,0 +1,67 @@
+# .github/workflows/ci.yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main # O la rama que uses como principal
+
+jobs:
+  build-and-scan:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1 # Ajusta tu región de AWS
+      ECR_REPOSITORY: gitops-web-app
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./app
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ steps.build-image.outputs.image }}
+          format: 'table'
+          exit-code: '1' # Falla el job si Trivy encuentra vulnerabilidades (ajusta según tu tolerancia)
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH' # Ajusta la severidad deseada
+          ignore-unfixed: true
+
+      - name: Setup Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          publish: false # No publiques resultados a Semgrep App
+          # Puedes especificar reglas o configuraciones específicas de Semgrep
+          # config: p/ci, p/security-audit # Ejemplo de reglas predefinidas
+
+      - name: Run Semgrep
+        run: semgrep --config auto --metrics=off --error --json > semgrep-results.json || true
+        working-directory: ./app # Ejecuta Semgrep en la carpeta de tu código
+      - name: Upload Semgrep results
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: semgrep-results.json
+          if-no-files-found: ignore # No falla si no hay resultados (ej. sin código escaneable)

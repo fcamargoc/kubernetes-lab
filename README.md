@@ -1,0 +1,2 @@
+# kubernetes-lab
+Este proyecto realiza el despliegue de una aplicación frontend en AWS, utilizando los servicios de ECR para el almacenamiento de imágenes Docker y EKS para la orquestación de contenedores. Adicionalmente, la infraestructura es monitorizada mediante ArgoCD para la gestión del ciclo de vida del despliegue. Finalmente, el objetivo principal del proyecto es asegurar y controlar el proceso de despliegue mediante análisis de seguridad con las herramientas Trivy y Semgrep.

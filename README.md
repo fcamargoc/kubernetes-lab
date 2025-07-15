@@ -41,10 +41,11 @@ abre tu navegador y digita la siguiente url  https://localhost:8080
 
 en Powershell ejecuta el siguiente script:
 
+*/
 [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(
 (kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}")
 ))
-
+/*
 el usuario predeterminado es admin
 
 # Step 3

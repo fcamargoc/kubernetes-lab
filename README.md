@@ -6,7 +6,7 @@ Este proyecto realiza el despliegue de una aplicación frontend en AWS, utilizan
 ## 1. Por medio del archivo Cluster.yaml definimos la configuracion del cluster, utilizaremos eksctl de aws para la creacion.
 
 
-## 2.en consola ejecuta el siguiente comando:
+## 2. en consola ejecuta el siguiente comando:
 
 eksctl create cluster -f cluster.yaml
 
@@ -55,7 +55,7 @@ aws ecr create-repository --repository-name gitops-web-app --region us-east-1 # 
 
 Copia el URI de tu repositorio ECR. Lo necesitarás en el workflow.
 
-## 2 Configura los secreto de aws 
+## 2. Configura los secreto de aws 
 En tu repositorio de GitHub, ve a Settings > Secrets and variables > Actions > New repository secret.
 
 AWS_ACCESS_KEY_ID: Tu clave de acceso de AWS.
